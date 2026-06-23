@@ -1,6 +1,6 @@
 ## Homelab Architecture
 
-This is the environment everything else in my portfolio runs on. I built it to mirror the patterns I see in real enterprise networks: segmentation, a proper firewall, an IDS, and centralised logging, so I could practice detection and investigation on infrastructure I understand end to end. The goal was to make deliberate design choices and be able to explain every one of them, and to build a base I can keep extending as my projects grow.
+This is the environment everything else in my portfolio runs on. I built it to mirror the patterns I see in enterprise networks: segmentation, a proper firewall, an IDS, and centralised logging, so I could practice detection and investigation on infrastructure I understand end to end, and keep building on as my projects grow.
 
 ### Topology
 
@@ -26,7 +26,7 @@ OPNsense handles DHCP and DNS across the VLANs, with Unbound as the resolver. I 
 
 ### Why OPNsense
 
-The router my ISP gave me was excellent for ease of use and reliability but not suitable for a home lab. I wanted a firewall and router I could actually configure and inspect rather than one that limits what you can do and hides everything behind a friendly UI. So getting rid of my ISP router was one of the first actions I took for my home lab project. OPNsense gives me granular rules, proper logging, and the freedom to shape the network exactly how I want. Running it on a dedicated appliance keeps it isolated and means the firewall isn't sharing resources with anything I'm experimenting on.
+My ISP's router was reliable but not suitable for a home lab, so replacing it was one of the first things I did. I wanted a firewall I could actually configure and inspect, not one that hides everything behind a friendly UI. OPNsense gives me granular rules, proper logging, and the freedom to shape the network how I want, and running it on a dedicated appliance keeps it isolated from anything I'm experimenting on.
 
 ### Suricata (IDS)
 
@@ -34,7 +34,7 @@ Suricata runs on OPNsense and inspects traffic as it crosses the firewall. Rathe
 
 ### Centralised logging
 
-I identified what generates logs and set up forwarding to send them to Wazuh: the Windows endpoints via Sysmon, OPNsense and Suricata from the edge, and the firewall itself. Centralising the logs is what turns a pile of separate devices into something I can monitor and investigate as one environment. There are certainly more types of logs I could forward to Wazuh, such as UniFi controller logs, but those will require configuring a decoder so Wazuh can parse and understand them. Part of my ongoing project is to identify which logs are relevant and forward them.
+I set up forwarding so everything that generates logs sends them to Wazuh: the Windows endpoints via Sysmon, plus OPNsense, Suricata, and the firewall from the edge. Centralising them is what turns a pile of separate devices into one environment I can monitor and investigate. There's more I could forward (the UniFi controller, for instance), but some sources need a custom decoder before Wazuh can parse them, so part of the ongoing work is deciding which logs are actually worth adding.
 
 ### What's next
 
