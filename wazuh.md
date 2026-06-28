@@ -30,14 +30,12 @@ Standing a SIEM up is one thing; knowing it catches something is another. So I b
 
 It landed as **"Multiple firewall block events from same source"**, with Wazuh correlating the individual blocks into one alert, a detection I'd map to MITRE ATT&CK **T1046 (Network Service Discovery)**. Seeing a scan I'd generated get caught and correlated through a pipeline I'd built from scratch was the moment it clicked.
 
-I then worked two more sources to build triage instinct:
+![Firewall alert to Wazuh](assets/wazuh/multiple_blocks_firewall.png)
+
+I performed two more tests:
 
 - **Failed logins:** I deliberately mistyped the password on a local Windows account several times, and the repeated failures surfaced in Wazuh. It's the same pattern that, against a real account, points to a brute-force attempt.
 - **PowerShell:** Sysmon's full command-line logging (from the SwiftOnSecurity config) caught the PowerShell I'd run to SSH into the servers for actual admin work. Those alerts fired, but they were benign: my own activity, not an attacker.
-
-Sitting with that gap, between a real signal and my own noise, is exactly the false-positive instinct the job runs on.
- 
-![Firewall alert to Wazuh](assets/wazuh/multiple_blocks_firewall.png)
 
 ## Failed logins
 
@@ -46,11 +44,9 @@ To see this end to end, I traced the failed logins from the Windows host through
 ```powershell
 Get-WinEvent -FilterHashtable @{LogName = 'Security'; Id = 4625}
 ```
-
 The same events then surface as alerts in Wazuh, matched on event ID 4625.
 
 ![Failed Windows Logons](assets/wazuh/failed_win_logon_1.png)
-
 ![Event ID 4625 alert](assets/wazuh/eventid_4625.png)
 
 ## What's next
